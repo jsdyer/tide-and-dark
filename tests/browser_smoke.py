@@ -2,6 +2,7 @@
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+import os
 import shutil
 import tempfile
 import threading
@@ -24,7 +25,7 @@ def main():
         threading.Thread(target=server.serve_forever, daemon=True).start()
         try:
             with sync_playwright() as p:
-                browser = p.chromium.launch()
+                browser = p.chromium.launch(executable_path=os.getenv("CHROMIUM_PATH"))
                 page = browser.new_page(viewport={"width": 1280, "height": 1000})
                 errors = []
                 page.on("pageerror", lambda error: errors.append(str(error)))

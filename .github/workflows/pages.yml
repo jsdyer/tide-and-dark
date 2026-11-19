@@ -52,7 +52,11 @@ jobs:
       - name: Install browser test dependencies
         run: |
           python3 -m pip install -r tests/browser-requirements.txt
-          python3 -m playwright install --with-deps chromium
+          if command -v google-chrome >/dev/null; then
+            echo "CHROMIUM_PATH=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          else
+            python3 -m playwright install --with-deps chromium
+          fi
       - name: Check application in a browser
         run: python3 tests/browser_smoke.py
       - name: Persist validated edition
