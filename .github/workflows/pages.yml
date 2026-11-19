@@ -3,25 +3,34 @@ on:
   pull_request:
   push:
     branches: [main]
+  schedule:
+    - cron: '13 10 2 * *'
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
+    permissions:
+      contents: write
     outputs:
       publish: ${{ steps.identity.outputs.publish }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
-          persist-credentials: false
+          persist-credentials: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
+      - name: Refresh and validate published source records
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          python -m pip install -r scripts/requirements.txt
+          OPENBLAS_NUM_THREADS=1 python scripts/refresh.py
       - name: Test the application
         run: node --test tests/*.test.mjs
       - name: Test the builder
@@ -46,6 +55,16 @@ jobs:
           python3 -m playwright install --with-deps chromium
       - name: Check application in a browser
         run: python3 tests/browser_smoke.py
+      - name: Persist validated edition
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        run: |
+          git add web/*.json
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Update validated source edition'
+            git push origin HEAD:main
+          fi
       - name: Save browser screenshots
         if: always()
         uses: actions/upload-artifact@v4
@@ -68,7 +87,7 @@ jobs:
   deploy:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.build.outputs.publish == 'true'
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
       group: github-pages

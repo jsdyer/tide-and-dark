@@ -28,23 +28,36 @@ def main():
                 page = browser.new_page(viewport={"width": 1280, "height": 1000})
                 errors = []
                 page.on("pageerror", lambda error: errors.append(str(error)))
-                page.goto(f"http://127.0.0.1:{server.server_port}/example-tool/")
-                page.locator("#sample").click()
-                assert page.locator("#output").input_value() == "Halifax\nLangley\nVancouver"
-                assert "1 duplicate removed" in page.locator("#status").inner_text()
-                page.locator("#input").fill('<img src=x onerror="alert(1)">\n<img src=x onerror="alert(1)">')
-                assert page.locator("#output").input_value() == '<img src=x onerror="alert(1)">'
-                assert page.locator("img").count() == 0
-                page.locator("#clear").click()
-                assert page.locator("#output").input_value() == ""
-                page.locator("#sample").click()
-                page.screenshot(path=str(screenshots / "desktop.png"), full_page=True)
-                page.set_viewport_size({"width": 390, "height": 844})
+                url=f"http://127.0.0.1:{server.server_port}/example-tool/"
+                page.goto(url)
+                page.wait_for_selector("#results:visible")
+                page.select_option("#station","halifax")
+                first=page.locator("#from").get_attribute("min")
+                last=page.locator("#from").get_attribute("max")
+                checks_launch_month=first <= "2026-12-01" <= last
+                page.fill("#from","2026-12-01" if checks_launch_month else first)
+                page.select_option("#days","30")
+                page.wait_for_function("document.querySelectorAll('#rows tr').length > 0")
+                count=page.locator("#rows tr").count()
+                if checks_launch_month:
+                    assert count==11
+                    assert "22%" in page.locator("#rows tr").first.inner_text()
+                page.locator("#rows button").first.click()
+                if checks_launch_month: assert "10:08" in page.locator("#chosen").inner_text()
+                page.select_option("#below","below")
+                assert page.locator("#rows tr").count() <= count
+                page.select_option("#below","any")
+                with page.expect_download() as saved: page.locator("#download").click()
+                assert saved.value.suggested_filename.endswith(".csv")
+                page.select_option("#station","point-atkinson")
+                assert "America/Vancouver" in page.locator("#coverage").inner_text()
+                page.screenshot(path=str(screenshots / "desktop.png"))
+                page.set_viewport_size({"width":390,"height":844})
                 assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
-                page.screenshot(path=str(screenshots / "mobile.png"), full_page=True)
+                page.screenshot(path=str(screenshots / "mobile.png"))
                 assert not errors, errors
                 browser.close()
-            print("Browser checks passed: project subpath, sample, clear, safe text and mobile layout")
+            print("Browser checks passed: project subpath, source data, interactive filters, CSV and mobile layout")
         finally:
             server.shutdown()
 

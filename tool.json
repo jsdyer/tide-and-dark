@@ -1,16 +1,48 @@
 {
-  "id": "coolcode-tool-template",
-  "title": "CoolCode Tool Starter",
-  "description": "A browser-only example that trims lines and removes exact duplicates.",
-  "category": "security",
-  "tags": ["text", "lines", "duplicates"],
-  "icon": "scan-search",
-  "url": "/coolcode-tool-template/",
-  "source": "https://github.com/jsdyer/coolcode-tool-template",
+  "title": "Tide & Dark",
+  "description": "Find photography windows when a modeled Canadian low tide overlaps darkness and a dim Moon.",
+  "category": "field-kit",
+  "icon": "moon-star",
+  "tags": [
+    "tide",
+    "astronomy",
+    "Halifax",
+    "Vancouver",
+    "photography"
+  ],
+  "id": "tide-and-dark",
+  "url": "/tide-and-dark/",
   "hosting": "project",
   "access": "browser",
+  "source": "https://github.com/jsdyer/tide-and-dark",
   "data_info": {
-    "mode": "local",
-    "detail": "The browser reads the text you paste and compares its lines."
+    "mode": "snapshot",
+    "detail": "TICON-3 coastal gauge constants produce independent low-tide estimates at seven Canadian sites. Solar altitude and lunar illumination are calculated for each station.",
+    "cadence": "Monthly",
+    "probes": [
+      {
+        "label": "Prediction dates",
+        "url": "https://coolcode.ca/tide-and-dark/status.json",
+        "path": [
+          "start"
+        ],
+        "end_path": [
+          "through"
+        ]
+      },
+      {
+        "label": "Data retrieved",
+        "url": "https://coolcode.ca/tide-and-dark/status.json",
+        "path": [
+          "retrieved"
+        ],
+        "count_at": {
+          "path": [
+            "records"
+          ],
+          "unit": "modeled low tides"
+        }
+      }
+    ]
   }
 }

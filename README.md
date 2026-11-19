@@ -1,115 +1,23 @@
-# CoolCode browser tool template
+# Tide & Dark
 
-A starting point for independent tools at `coolcode.ca/<repo>/`: a working local-text
-example, responsive UI, Python standard-library build, Node tests, PR checks and Pages
-publication. No npm install is needed.
+[Find a coastal photography window](https://coolcode.ca/tide-and-dark/)
 
-## Using the example
+Choose Halifax Harbour, Yarmouth, Saint John Harbour, Point Atkinson, Vancouver Harbour, Victoria Harbour or Tofino. Select a starting date, twilight threshold, maximum illuminated Moon fraction and time around a modeled low. You can also require the Moon to be below the local horizon. Select a match for five-minute sky conditions, download the results with timezone-independent timestamps or share the view by copying its URL.
 
 <!-- coolcode:guide -->
-The first occurrence of each trimmed line keeps its place. Compare the output with the original text before copying the result.
+Try Halifax starting December 1, 2026 with astronomical darkness, at most 25% lunar illumination and one hour on either side of low tide. The December 3 local evening window surrounds a modeled 10:08 p.m. low with a roughly 22% illuminated Moon.
 <!-- /coolcode:guide -->
 
-For a real tool, replace this paragraph with one or two plain-text sentences
-about an example, a limit or how to interpret the results. Keep the source,
-coverage, refresh behaviour and a worked example in this README as appropriate.
-When updating a tool, revise any details its behaviour has changed and keep the
-homepage's shorter data-source sentence in `tool.json` accurate.
-The hub imports the marked note into the catalogue README.
+## Data and interpretation
 
-## One-time template setup
+Hart-Davis, Michael G., Denise Dettmering and Florian Seitz (2022), [TICON-3, PANGAEA](https://doi.org/10.1594/PANGAEA.951610), CC BY 4.0. This project selects seven coastal gauge records and transforms twelve published amplitudes and Greenwich phase lags into an independent series using UTide. The retained lines are M2, S2, N2, K2, K1, O1, P1, Q1, M4, MS4, MN4 and M6. Sea-level offsets use a harmonic mean of zero. A chart datum or an actual beach elevation is needed to infer an absolute water level. Historical gauge record dates and the calculated prediction period are shown separately. Dataset transformations and any errors belong to this project.
 
-Enable **Settings → General → Template repository** here. This repository does not
-need Pages enabled: its workflow builds/tests but intentionally skips deployment.
-New copies also skip deployment until `scripts/init.py` sets the tool ID to match
-their repository name. This lets you create the repo before configuring Pages.
+The generator uses nodal corrections and Greenwich astronomical arguments, samples heights every ten minutes and interpolates extrema from three neighboring points. It retains all modeled lows, including small mixed-tide minima. [SunCalc 1.9.0](https://github.com/mourner/suncalc/tree/v1.9.0) computes solar altitude, lunar altitude and illuminated fraction at each site, under the included BSD licence. Five-minute samples define concurrent conditions. Intervals require at least two consecutive qualifying samples. Search dates refer to the local date of the low; a window may extend into the previous or following date. Astronomical darkness uses a solar centre altitude of −18°, nautical −12° and civil −6°.
 
-## Start a new tool
+A launch cross-check against official high/low predictions for November 1–7, 2026 matched 13 Halifax lows within 12 minutes, 12 Saint John lows within 16 minutes and 13 Point Atkinson lows within 38 minutes. These checks quantify only that sample. Wind, atmospheric pressure, coastal terrain, a local tide phase difference, cloud and light pollution affect a particular photograph. Use the official Canadian tide tables and site access guidance for shoreline or navigation decisions. The public site links to the [CHS station directory](https://tides.gc.ca/en/stations) and uses the independently licensed research constants for its own estimates. [CHS data licence](https://www.tides.gc.ca/en/licence-agreement).
 
-1. Select **Use this template → Create a new repository**, choose owner `jsdyer`,
-   a unique lowercase name such as `my-tool`, and public visibility.
-2. Clone the new repository. Use Python 3.12+ and Node 24+.
-3. Set the identity, using a slug that matches the repository name:
+## Maintenance
 
-```sh
-python3 scripts/init.py my-tool --title "My Tool" --description "Describe what this tool does."
-```
+The monthly refresh retrieves the original archive, records its SHA-256 digest and rebuilds a horizon through the end of the following calendar year. It stops if the coastal gauge IDs or constituent coverage change. The compact static data, retrieval date and covered interval are committed after checks. Queries run in the visitor’s browser. App use requires no account or key.
 
-Review the category, tags and icon in `tool.json`. `access: "browser"` tells the main
-catalogue that the tool works immediately without installation. `--owner` supports a different
-GitHub owner, but only projects owned by `jsdyer` inherit the CoolCode domain.
-
-4. Replace the example in `web/` and its tests. Update the privacy explanation,
-   source attribution and README to describe the real tool.
-5. Test and preview:
-
-```sh
-node --test tests/*.test.mjs
-python3 -m unittest discover -s tests -v
-python3 scripts/build.py
-python3 -m http.server 8000 --directory dist
-```
-
-Open `http://localhost:8000/`. The example trims lines, skips blanks and removes exact
-duplicates, preserving first-seen order and capitalization. It makes no API requests
-and does not persist text. Update that explanation if your app behaves differently.
-
-CI also tests the browser flow and mobile layout at a project subpath. Replace the
-sample assertions in `tests/browser_smoke.py` when implementing your own UI. To run
-that check locally (optional for ordinary preview):
-
-```sh
-python3 -m venv .venv
-. .venv/bin/activate
-python3 -m pip install -r tests/browser-requirements.txt
-python3 -m playwright install --with-deps chromium
-python3 tests/browser_smoke.py
-```
-
-Playwright is a test-only dependency; the app and its static build do not use it.
-
-## Publish and register
-
-When the actual tool is ready, in the **new tool repository** set **Settings → Pages → Build and deployment →
-Source → GitHub Actions**. Push to `main`, or manually run **Browser tool · Check and
-publish** after enabling Pages. If the initial deployment ran before Pages was enabled,
-enable it and rerun. PRs only check/build and provide a downloadable preview artifact.
-
-Keep asset paths and module imports relative. Check `https://coolcode.ca/my-tool/`.
-Do not add a CNAME or set `coolcode.ca` as this project's custom domain; the account
-site supplies it. Only successful `main` builds deploy.
-
-After verifying the app, copy the reviewed object from `tool.json` into `data/tools.json`
-in [the main site](https://github.com/jsdyer/jsdyer.github.io). Each tool still builds
-independently. Update the hub record when listing metadata changes; the hub is the
-authority for discovery. Ordinary app updates touch only this repository.
-
-The main site separates **Use in your browser** from **Install yourself**. An app
-that asks for a file is still a browser tool. Standalone Linux packages should start
-in their own repositories with their own build/release workflow, rather than copying
-this browser-only scaffold. Their hub record uses `access: "install"`, links to an
-installation guide, and includes `requirements`.
-
-## Files
-
-| Path | Purpose |
-| --- | --- |
-| `tool.json` | Page metadata and a ready-to-copy catalogue record |
-| `web/` | HTML, responsive CSS, DOM interactions and separate model logic |
-| `scripts/build.py` | Escape metadata and build `web/` into `dist/` |
-| `scripts/init.py` | Set a new project's identity |
-| `tests/` | Application and builder tests |
-| `.github/workflows/pages.yml` | Check PRs and publish successful main builds |
-| `AGENTS.md` | Instructions for future coding work |
-
-Namespace optional storage as `coolcode:<tool-id>:<key>`; CoolCode paths share a
-browser origin. Don't save pasted text/uploads by default. Document external APIs
-and send only the information needed for the selected action. Never embed secrets.
-
-Scheduled refresh is opt-in. Validate source data before deploying, display its date,
-and preserve the last good deployment on failure. Public-repository schedules can
-stop after 60 days without repository activity.
-
-Templates don't propagate future edits automatically. Adopt fixes explicitly and
-consider a versioned reusable workflow once several tools confirm the shared process.
-Choose and add the intended software license before distributing a new project.
+Run `python -m pip install -r scripts/requirements.txt` and `OPENBLAS_NUM_THREADS=1 python scripts/refresh.py` to refresh. To build offline run `node --test tests/*.test.mjs`, `python -m unittest discover -s tests` and `python scripts/build.py`. CI also runs Chromium tests and publishes the checked build.

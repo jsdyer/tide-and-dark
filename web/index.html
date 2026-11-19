@@ -1,33 +1,15 @@
-<!doctype html>
-<html lang="en-CA">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="{{DESCRIPTION}}">
-  <title>{{TITLE}} · CoolCode</title>
-  <link rel="stylesheet" href="./style.css">
-  <script type="module" src="./app.mjs"></script>
-</head>
-<body data-tool-id="{{TOOL_ID}}">
-  <a class="skip" href="#main">Skip to content</a>
-  <header><a href="https://coolcode.ca/">← CoolCode.ca</a><a href="{{SOURCE_URL}}">Source &amp; instructions ↗</a></header>
-  <main id="main">
-    <p class="eyebrow">Browser tool starter</p>
-    <h1>{{TITLE}}</h1>
-    <p class="intro">{{DESCRIPTION}}</p>
-    <section aria-labelledby="example-title">
-      <h2 id="example-title">Clean a list</h2>
-      <p>Trim spaces, skip blank lines and remove exact duplicates. Capitalization stays distinct.</p>
-      <div class="panels">
-        <div><label for="input">Your lines</label><textarea id="input" rows="10" maxlength="100000" spellcheck="false" placeholder="Paste one item per line"></textarea></div>
-        <div><label for="output">Cleaned lines</label><textarea id="output" rows="10" readonly spellcheck="false"></textarea></div>
-      </div>
-      <div class="actions"><button id="sample" type="button">Load example</button><button id="clear" type="button">Clear</button><button id="copy" type="button" hidden>Copy result</button></div>
-      <p id="status" role="status" aria-live="polite">Paste a list to begin.</p>
-      <noscript><p>This tool needs JavaScript to process your text. The source is available above.</p></noscript>
-    </section>
-    <aside aria-label="Privacy"><strong>Stays on your device.</strong> This example makes no API requests and does not save your text. Reloading clears it.</aside>
-  </main>
-  <footer>Part of <a href="https://coolcode.ca/">the CoolCode collection</a>.</footer>
-</body>
-</html>
+<!doctype html><html lang="en-CA"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="{{DESCRIPTION}}"><title>{{TITLE}} · CoolCode</title><link rel="stylesheet" href="./style.css"><script defer src="./assets/suncalc.js"></script><script type="module" src="./app.mjs"></script></head>
+<body data-tool-id="{{TOOL_ID}}"><a class="skip" href="#main">Skip to coastal planner</a>
+<header><nav><a href="https://coolcode.ca/">← CoolCode</a><a href="{{SOURCE_URL}}">Source &amp; guide ↗</a></nav><h1>{{TITLE}}</h1><p>Find Canadian coastal photography windows when a modeled low tide falls in darkness. Choose how dark the sky should be and how much moonlight you want.</p></header>
+<main id="main"><p id="status" role="status" class="meta">Loading coastal tide estimates…</p>
+<section><h2>Find a window</h2><div class="controls">
+<label>Coastal station<select id="station"></select></label><label>From local date<input type="date" id="from"></label>
+<label>Search ahead<select id="days"><option value="30">30 days</option><option value="60">60 days</option><option value="90" selected>90 days</option><option value="180">180 days</option></select></label>
+<label>Darkness<select id="sun"><option value="-18">Astronomical · Sun ≤ −18°</option><option value="-12">Nautical · Sun ≤ −12°</option><option value="-6">Civil · Sun ≤ −6°</option></select></label>
+<label>Moon illumination<select id="moon"><option value="10">Up to 10%</option><option value="25" selected>Up to 25%</option><option value="50">Up to 50%</option><option value="100">Any phase</option></select></label>
+<label>Moon position<select id="below"><option value="any">Any altitude</option><option value="below">Below horizon</option></select></label>
+<label>Time around low<select id="near"><option value="30">Within 30 minutes</option><option value="60" selected>Within 60 minutes</option><option value="90">Within 90 minutes</option></select></label></div></section>
+<div id="results" hidden><section><h2 id="heading"></h2><p id="coverage"></p><div class="actions"><button id="download">Download matching windows (.csv)</button></div>
+<div class="scroll"><table><thead><tr><th>Local date of low</th><th>Photography window</th><th>Modeled low</th><th>Moon lit at low</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<section id="inspect" hidden><h2 id="chosen"></h2><p id="explain"></p><div id="strip" class="strip" aria-hidden="true"></div><div class="axis"><span id="left"></span><span>Modeled low</span><span id="right"></span></div><p class="hint">Bar height shows how far the Sun is below the horizon. Gold marks the five-minute samples that meet all selected conditions.</p></section></div>
+<section><h2>Reading a window</h2><p>Times use the station’s local time zone. The height is relative to the harmonic model’s zero mean. Shore access, weather and actual water levels can differ. For a visit, use official local tide tables and access information.</p><p id="provenance"></p><p><a href="https://doi.org/10.1594/PANGAEA.951610">TICON-3 research data</a> · <a href="https://tides.gc.ca/en/stations">Canadian official tide stations</a> · <a href="https://github.com/mourner/suncalc">SunCalc sky calculations</a></p></section></main></body></html>
