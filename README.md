@@ -21,3 +21,11 @@ A launch cross-check against official high/low predictions for November 1–7, 2
 The monthly refresh retrieves the original archive, records its SHA-256 digest and rebuilds a horizon through the end of the following calendar year. It stops if the coastal gauge IDs or constituent coverage change. The compact static data, retrieval date and covered interval are committed after checks. Queries run in the visitor’s browser. App use requires no account or key.
 
 Run `python -m pip install -r scripts/requirements.txt` and `OPENBLAS_NUM_THREADS=1 python scripts/refresh.py` to refresh. To build offline run `node --test tests/*.test.mjs`, `python -m unittest discover -s tests` and `python scripts/build.py`. CI also runs Chromium tests and publishes the checked build.
+
+<!-- schedule-reliability -->
+## Schedule reliability
+
+Public GitHub repositories can have scheduled workflows disabled after 60 days of inactivity. A separate weekly [schedule guard](.github/workflows/schedule-guard.yml) calls GitHub's enable-workflow API for an explicit list of refresh workflows and itself. It can restore workflows disabled for inactivity, preserves manually disabled workflows, and runs independently of collection failures.
+
+This is an interim mitigation, not a scheduling guarantee: GitHub does not document active-workflow renewal as a permanent exemption, and scheduled runs can be delayed or dropped. A scheduler on our own Linux server is the planned independent trigger. The guard does not collect data, create dummy commits, or change source/check timestamps; successful collection and published data freshness still need monitoring.
+<!-- /schedule-reliability -->
