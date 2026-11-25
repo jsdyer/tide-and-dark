@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """Build a browser tool using Python's standard library; no network required."""
 from html import escape
+import hashlib
 import json
 from pathlib import Path
 import re
 import shutil
 import tempfile
 from urllib.parse import urlsplit
+
+from search_metadata import add_search_metadata
 
 ROOT = Path(__file__).resolve().parents[1]
 SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
@@ -40,6 +43,32 @@ def metadata(root=ROOT):
     return tool
 
 
+
+def version_assets(stage):
+    """Give the whole local asset graph one deterministic cache version."""
+    digest = hashlib.sha256()
+    for path in sorted(stage.rglob("*")):
+        if path.is_file():
+            digest.update(path.relative_to(stage).as_posix().encode())
+            digest.update(b"\0")
+            digest.update(path.read_bytes())
+    version = digest.hexdigest()[:16]
+
+    def local_reference(match):
+        quote, relative = match.group(1), match.group(2)
+        target = stage / relative.removeprefix("./")
+        if target.is_file() and target.suffix in {".mjs", ".js", ".css", ".json"}:
+            return f"{quote}{relative}?v={version}{quote}"
+        return match.group(0)
+
+    # Version imports and config fetches together, so an updated app never imports
+    # a still-fresh cached module from the previous release.
+    references = re.compile(r"([\"'])(\./[^\"'?]+)\1")
+    for path in [stage / "index.html", *stage.glob("*.mjs")]:
+        path.write_text(references.sub(local_reference, path.read_text(encoding="utf-8")), encoding="utf-8")
+    return version
+
+
 def build(root=ROOT):
     tool = metadata(root)
     output = root / "dist"
@@ -58,9 +87,24 @@ def build(root=ROOT):
             if placeholder not in page:
                 raise ValueError(f"Missing template placeholder: {placeholder}")
             page = page.replace(placeholder, escape(tool[key], quote=True))
+        slug = tool["id"]
+        on_coolcode = (
+            slug != "coolcode-tool-template"
+            and tool["source"].rstrip("/") == f"https://github.com/jsdyer/{slug}"
+        )
+        reporting = {
+            "{{VISIT_COUNTER}}": '<script defer src="/assets/tool-metrics.js" referrerpolicy="no-referrer"></script>',
+            "{{ISSUE_LINK}}": f'<a href="https://coolcode.ca/report/?tool={slug}" referrerpolicy="no-referrer">Report an issue</a>',
+        }
+        for placeholder, markup in reporting.items():
+            if placeholder not in page:
+                raise ValueError(f"Missing template placeholder: {placeholder}")
+            page = page.replace(placeholder, markup if on_coolcode else "")
         if re.search(r"\{\{[A-Z_]+\}\}", page):
             raise ValueError("Unresolved template placeholder in web/index.html")
+        page = add_search_metadata(page, tool)
         index.write_text(page, encoding="utf-8")
+        version_assets(stage)
         (stage / ".nojekyll").touch()
         if output.exists():
             shutil.rmtree(output)

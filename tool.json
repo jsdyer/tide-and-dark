@@ -1,11 +1,12 @@
 {
   "title": "Tide & Dark",
-  "description": "Find photography windows when a modeled Canadian low tide overlaps darkness and a dim Moon.",
+  "description": "Plan Canadian coastal photography with official tide and daylight windows, regional weather, or an independent dark-sky tide model.",
   "category": "field-kit",
   "icon": "moon-star",
   "tags": [
     "tide",
-    "astronomy",
+    "daylight",
+    "weather",
     "Halifax",
     "Vancouver",
     "photography"
@@ -16,13 +17,26 @@
   "access": "browser",
   "source": "https://github.com/jsdyer/tide-and-dark",
   "data_info": {
-    "mode": "snapshot",
-    "detail": "TICON-3 coastal gauge constants produce independent low-tide estimates at seven Canadian sites. Solar altitude and lunar illumination are calculated for each station.",
-    "cadence": "Monthly",
+    "mode": "mixed",
+    "detail": "CHS official tide predictions refresh daily for seven coastal stations. SunCalc provides daylight; optional ECCC weather is retrieved on request. The independent TICON-3 dark-sky tide model remains available.",
+    "cadence": "Daily official tide predictions; monthly independent model",
     "probes": [
       {
-        "label": "Prediction dates",
-        "url": "https://coolcode.ca/tide-and-dark/status.json",
+        "label": "Official predictions retrieved",
+        "url": "https://coolcode.ca/tide-and-dark/daylight-status.json",
+        "path": [
+          "retrieved"
+        ],
+        "count_at": {
+          "path": [
+            "records"
+          ],
+          "unit": "predicted tide events"
+        }
+      },
+      {
+        "label": "Official tide dates",
+        "url": "https://coolcode.ca/tide-and-dark/daylight-status.json",
         "path": [
           "start"
         ],
@@ -31,17 +45,14 @@
         ]
       },
       {
-        "label": "Data retrieved",
+        "label": "Independent model dates",
         "url": "https://coolcode.ca/tide-and-dark/status.json",
         "path": [
-          "retrieved"
+          "start"
         ],
-        "count_at": {
-          "path": [
-            "records"
-          ],
-          "unit": "modeled low tides"
-        }
+        "end_path": [
+          "through"
+        ]
       }
     ]
   }

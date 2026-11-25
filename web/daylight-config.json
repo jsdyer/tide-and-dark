@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "days": 14,
+  "stations": [
+    {
+      "id": "halifax",
+      "code": "00490",
+      "name": "Halifax",
+      "station_id": "5cebf1df3d0f4a073c4bbcbb",
+      "lat": 44.65914,
+      "lon": -63.583386,
+      "province": "NS",
+      "zone": "America/Halifax",
+      "weather_city": "ns-19",
+      "weather_name": "Halifax"
+    },
+    {
+      "id": "yarmouth",
+      "code": "00365",
+      "name": "Yarmouth",
+      "station_id": "5cebf1df3d0f4a073c4bbc8d",
+      "lat": 43.832311,
+      "lon": -66.124968,
+      "province": "NS",
+      "zone": "America/Halifax",
+      "weather_city": "ns-29",
+      "weather_name": "Yarmouth"
+    },
+    {
+      "id": "saint-john",
+      "code": "00065",
+      "name": "Saint John",
+      "station_id": "5cebf1df3d0f4a073c4bbc24",
+      "lat": 45.254596,
+      "lon": -66.06004,
+      "province": "NB",
+      "zone": "America/Moncton",
+      "weather_city": "nb-23",
+      "weather_name": "Saint John"
+    },
+    {
+      "id": "point-atkinson",
+      "code": "07795",
+      "name": "Point Atkinson",
+      "station_id": "5cebf1de3d0f4a073c4bb94c",
+      "lat": 49.3375,
+      "lon": -123.253583,
+      "province": "BC",
+      "zone": "America/Vancouver",
+      "weather_city": "bc-99",
+      "weather_name": "West Vancouver"
+    },
+    {
+      "id": "vancouver",
+      "code": "07735",
+      "name": "Vancouver",
+      "station_id": "5cebf1de3d0f4a073c4bb943",
+      "lat": 49.2863,
+      "lon": -123.0997,
+      "province": "BC",
+      "zone": "America/Vancouver",
+      "weather_city": "bc-74",
+      "weather_name": "Vancouver"
+    },
+    {
+      "id": "victoria",
+      "code": "07120",
+      "name": "Victoria Harbour",
+      "station_id": "5cebf1df3d0f4a073c4bbd1e",
+      "lat": 48.424363,
+      "lon": -123.370828,
+      "province": "BC",
+      "zone": "America/Vancouver",
+      "weather_city": "bc-85",
+      "weather_name": "Victoria"
+    },
+    {
+      "id": "tofino",
+      "code": "08615",
+      "name": "Tofino",
+      "station_id": "5cebf1e23d0f4a073c4bc07c",
+      "lat": 49.154,
+      "lon": -125.913,
+      "province": "BC",
+      "zone": "America/Vancouver",
+      "weather_city": "bc-17",
+      "weather_name": "Tofino"
+    }
+  ]
+}

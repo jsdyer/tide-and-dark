@@ -31,6 +31,16 @@ def main():
                 page.on("pageerror", lambda error: errors.append(str(error)))
                 url=f"http://127.0.0.1:{server.server_port}/example-tool/"
                 page.goto(url)
+                page.wait_for_function("document.querySelector('#day-date').min !== ''")
+                page.fill("#day-date", page.locator("#day-date").get_attribute("min"))
+                page.wait_for_selector("#day-tides tr")
+                assert page.locator("#day-mode").get_attribute("aria-pressed") == "true"
+                assert page.locator("#day-sunrise").inner_text() != "—"
+                page.select_option("#day-station", "vancouver")
+                assert "America/Vancouver" in page.locator("#day-source").inner_text()
+                assert "lat=" in page.locator("#day-weather-link").get_attribute("href")
+                page.screenshot(path=str(screenshots / "daylight.png"), full_page=True)
+                page.locator("#night-mode").click()
                 page.wait_for_selector("#results:visible")
                 page.select_option("#station","halifax")
                 first=page.locator("#from").get_attribute("min")

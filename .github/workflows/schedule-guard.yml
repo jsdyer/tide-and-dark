@@ -23,7 +23,7 @@ jobs:
       actions: write
     env:
       GH_TOKEN: ${{ github.token }}
-      GUARDED_PATHS: '[".github/workflows/pages.yml",".github/workflows/schedule-guard.yml"]'
+      GUARDED_PATHS: '[".github/workflows/daylight.yml",".github/workflows/pages.yml",".github/workflows/schedule-guard.yml"]'
     steps:
       - name: Renew explicitly managed schedules
         shell: bash
