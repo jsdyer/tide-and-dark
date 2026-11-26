@@ -39,6 +39,21 @@ def main():
                 page.select_option("#day-station", "vancouver")
                 assert "America/Vancouver" in page.locator("#day-source").inner_text()
                 assert "lat=" in page.locator("#day-weather-link").get_attribute("href")
+                page.select_option('#day-photo-place','peggys-cove')
+                assert page.locator('#day-station').input_value()=='halifax'
+                assert 'not a prediction for Peggy' in page.locator('#day-photo-note').inner_text()
+                assert 'Peggy' in page.locator('#day-light-place').inner_text()
+                assert 'Halifax' in page.locator('#day-tide-place').inner_text()
+                assert 'photo_place=peggys-cove' in page.locator('#day-photo-sky').get_attribute('href')
+                page.get_by_text('Save this coastal location',exact=True).click()
+                page.fill('#day-save-name','Photo trip');page.click('#day-save')
+                page.reload();page.wait_for_function("document.querySelector('#day-date').min !== ''")
+                page.get_by_text('Save this coastal location',exact=True).click()
+                page.select_option('#day-photo-place','stanley-park')
+                page.select_option('#day-saved',label='Photo trip');page.click('#day-load-saved')
+                assert page.locator('#day-photo-place').input_value()=='peggys-cove'
+                page.select_option('#day-station','vancouver')
+                assert page.locator('#day-photo-place').input_value()==''
                 page.screenshot(path=str(screenshots / "daylight.png"), full_page=True)
                 page.locator("#night-mode").click()
                 page.wait_for_selector("#results:visible")

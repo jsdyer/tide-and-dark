@@ -8,6 +8,7 @@ For dark-sky photography: Select a starting date, twilight threshold, maximum il
 
 <!-- coolcode:guide -->
 Choose a coastal station and date in daylight mode to compare official tide predictions with sunrise and sunset. Current weather is fetched only when requested and is labelled separately from the selected tide date. Switch to dark-sky photography for the independent long-range tide model and Moon filters; the two modes use different height datums.
+Peggy’s Cove and Stanley Park photography presets link to golden/blue-hour, Moon and cloud-aware sessions in Nightfinder. Named coastal selections can be saved locally. The tide reference is labelled separately from the photography coordinates.
 <!-- /coolcode:guide -->
 
 ## Official daylight planner
@@ -16,7 +17,7 @@ The [CHS IWLS API](https://tides.gc.ca/en/web-services-offered-canadian-hydrogra
 
 The full required CHS attribution and no-navigation notice is prominently displayed in the daylight planner. This free noncommercial derivative is provided under the [CHS licence agreement](https://tides.gc.ca/en/licence-agreement). It is not for navigation. CHS data are not covered by the research constants’ CC BY licence. A capture older than 48 hours is flagged; an expired horizon is explicitly marked and out-of-range dates show no current result. Collection failure keeps the prior deployment.
 
-SunCalc calculates sunrise/sunset at each CHS station. ECCC city weather is fetched directly from [MSC GeoMet](https://api.weather.gc.ca/collections/citypageweather-realtime) only after the weather button is selected. The observing-station name and timestamp are shown; observations can be inland or at an airport and are not shoreline measurements. Older observations are flagged. Issued forecast times and periods remain visible; weather is never stretched to the multiweek tide horizon. Weather Window opens at the station coordinates for more regional alerts and air quality.
+SunCalc calculates sunrise/sunset at each CHS station, or at the selected photography preset coordinates. ECCC city weather is fetched directly from [MSC GeoMet](https://api.weather.gc.ca/collections/citypageweather-realtime) only after the weather button is selected. The observing-station name and timestamp are shown; observations can be inland or at an airport and are not shoreline measurements. Older observations are flagged. Issued forecast times and periods remain visible; weather is never stretched to the multiweek tide horizon. Weather Window opens at the station coordinates for more regional alerts and air quality.
 
 ## Independent dark-sky model: data and interpretation
 
@@ -48,4 +49,10 @@ The independent Linux scheduler should dispatch both allowlisted collector workf
 
 ## Privacy
 
-Date, tide and sky calculations stay in the browser; no planner inputs are stored in cookies or local storage. A shared URL includes the selected public station, date and filters. Pressing the optional weather button sends only the configured public ECCC city ID to ECCC. Weather Window links include the public station coordinates. No account or API key is required. Local assets are content-versioned to avoid mixed cached releases.
+Date, tide and sky calculations stay in the browser; named coastal selections are stored locally only when **Save location** is used. Up to 20 names, public preset IDs and tide-reference station IDs can be saved; the Delete control removes an entry. No cookies are used. A shared URL includes the selected public station, date and filters. Pressing the optional weather button sends only the configured public ECCC city ID to ECCC. Weather Window links include the public station coordinates. No account or API key is required. Local assets are content-versioned to avoid mixed cached releases.
+
+## Photography presets
+
+`web/photo-places.mjs` contains Peggy’s Cove / Peggys Point and Stanley Park / approximate centre, with official coordinate-source links. They use Halifax and Vancouver Harbour, respectively, as clearly labelled regional tide references. **Halifax tide predictions are not Peggy’s Cove tide predictions.** Local tide timing, height, wind and wave exposure can differ. Selecting another CHS station clears the photography preset; it never relabels a station prediction as a beach measurement.
+
+The daylight computation uses the selected photography coordinates while official extrema retain their original station, chart datum and dates. Nightfinder links carry the shared `photo_place` ID and selected date, with cloud forecasts requested there on demand. Saved coastal selections retain the current date rather than restoring an obsolete forecast date. Existing daily official-tide and monthly independent-model schedules are unchanged; no new API key or Worker update is needed.
