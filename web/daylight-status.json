@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "retrieved": "2026-11-25T18:50:34Z",
-  "start": "2026-11-24T00:00:00Z",
-  "through": "2026-12-10T00:00:00Z",
+  "retrieved": "2026-11-26T10:54:18Z",
+  "start": "2026-11-25T00:00:00Z",
+  "through": "2026-12-11T00:00:00Z",
   "source": "Canadian Hydrographic Service IWLS wlp-hilo",
   "stations": 7,
   "records": 411
